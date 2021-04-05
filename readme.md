@@ -9,8 +9,9 @@ ___
 ___
 python3 freq_filter.py [-h, --help] [-M, --manual] input_image [output_image]
 ___
-- -h --help:    brings up a help message
-- -M --manual:  Bring up a file explorer to manually choose the image you want and return the absolute path
+- -h --help:      Brings up a help message
+- -M --manual:    Bring up a file explorer to manually choose the image you want and return the absolute path
+- -a --automatic: Automatically find the noise and remove it
 - input_image:  Name of file containing image with periodic noise
 - ouput_image:  name of file to save the image [default: noise_free.jpg]   
 ___
