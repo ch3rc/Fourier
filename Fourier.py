@@ -27,7 +27,7 @@ def resize(image):
     return image
 
 
-def DFT(image):
+def DFT(image, flag):
     # get optimal DFT shape
     r, c = image.shape
 
@@ -58,6 +58,20 @@ def DFT(image):
 
     # magnitude spectrum
     spectrum = np.log(magnitude) / 30
+
+    if flag:
+
+        mask = cv.normalize(spectrum.copy(), None, 0, 255, cv.NORM_MINMAX, cv.CV_8U)
+
+        mask = cv.circle(mask, (mask.shape[1] // 2, mask.shape[0] // 2), 3, 0, -1)
+
+        for _ in range(4):
+            max_val = np.max(mask)
+            for i in range(mask.shape[0]):
+                for j in range(mask.shape[1]):
+                    if mask[i][j] == max_val:
+                        magnitude = cv.circle(magnitude, (j, i), 1, 0, -1)
+                        mask = cv.circle(mask, (j, i), 1, 0, -1)
 
     # sharpen the pixels on output
     magnitude = cv.pow(magnitude, 1.001)

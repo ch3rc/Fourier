@@ -52,12 +52,13 @@ def help_me():
     print("input_image:     Name of file containing image with periodic noise")
     print("output_image:    Name of file to save the image [default: noise_free.jpg]")
     print("-M or --manual:  Pop open a file explorer to pick your picture [helpful if you forgot image name]")
+    print("-a or automatic: Automatically clear noise from the image")
     print("{:->54}".format("-"))
 
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hM", ["help", "manual"])
+        opts, args = getopt.getopt(sys.argv[1:], "hMa", ["help", "manual", "automatic"])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(1)
@@ -66,6 +67,7 @@ def main():
     output_image = "noise_free.jpg"
     path = "C:\\Users\\codyh\\Desktop\\Test Pics"
     manual = False
+    automatic = False
     window = "image"
 
     for o, a in opts:
@@ -83,6 +85,8 @@ def main():
 
             if len(args) == 1:
                 output_image = args[0]
+        elif o in ("-a", "--automatic"):
+            automatic = True
         else:
             assert False, "Unhandled Option!"
 
@@ -117,25 +121,33 @@ def main():
     if manual is False:
         input_image = file_search(input_image, path)
         image = resize(input_image)
-        magnitude, spectrum, phase = DFT(image)
-
-        copy_img = np.copy(spectrum)
-        cv.imshow(window, copy_img)
-        cv.setMouseCallback(window, click_event)
+        cv.imshow("original image", image)
         cv.waitKey(0)
         cv.destroyAllWindows()
+        magnitude, spectrum, phase = DFT(image, automatic)
+
+        if not automatic:
+            copy_img = np.copy(spectrum)
+            cv.imshow(window, copy_img)
+            cv.setMouseCallback(window, click_event)
+            cv.waitKey(0)
+            cv.destroyAllWindows()
 
         IDFT(magnitude, phase, points, output_image, path)
 
     if manual is True:
         image = resize(input_image)
-        magnitude, spectrum, phase = DFT(image)
-
-        copy_img = np.copy(spectrum)
-        cv.imshow(window, copy_img)
-        cv.setMouseCallback(window, click_event)
+        cv.imshow("original image", image)
         cv.waitKey(0)
         cv.destroyAllWindows()
+        magnitude, spectrum, phase = DFT(image, automatic)
+
+        if not automatic:
+            copy_img = np.copy(spectrum)
+            cv.imshow(window, copy_img)
+            cv.setMouseCallback(window, click_event)
+            cv.waitKey(0)
+            cv.destroyAllWindows()
 
         IDFT(magnitude, phase, points, output_image, path)
 
